@@ -1,0 +1,58 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup,FormControl} from '@angular/forms';
+import validator from "validator";
+import {NavController} from '@ionic/angular';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss'],
+})
+export class LoginPage implements OnInit {
+  loginForm=new FormGroup({
+    userEmail: new FormControl(''),
+    userPassword: new FormControl(''),
+  });
+
+  loginFormValidator={
+    userEmail: {empty:'', email:''},
+    userPassword: {empty:''}
+  };
+
+  constructor(public NC:NavController) { }
+
+  ngOnInit() {
+  }
+
+  formValidator(): boolean{
+    if(validator.isEmpty(this.loginForm.value.userEmail)){
+      this.loginFormValidator.userEmail.empty="La direccion del correo es necesario..";
+      return false;
+    }else{
+      this.loginFormValidator.userEmail.empty='';
+    }
+    if(!validator.isEmail(this.loginForm.value.userEmail)){
+      this.loginFormValidator.userEmail.email="Ingresa un correo valido..";
+      return false;
+    }else{
+      this.loginFormValidator.userEmail.email='';
+    }
+
+    if(validator.isEmpty(this.loginForm.value.userPassword)){
+      this.loginFormValidator.userPassword.empty="Debe ingresar una contraseña..";
+      return false;
+    }else{
+      this.loginFormValidator.userPassword.empty='';
+    }    
+    return true;
+  }
+
+  //aqui va el metodo onclick
+  onSubmit(){
+    if(this.formValidator()){
+      this.NC.navigateForward('/home');
+      console.log('Formulario Validado');
+    }
+    
+  }
+}
